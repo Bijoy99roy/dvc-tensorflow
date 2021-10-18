@@ -127,10 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
+data/
 
 
 ./env
-
 # ignore the secret file
 config/secrets.yaml
