@@ -1,11 +1,12 @@
 from src.utils.all_utils import read_yaml, create_directory
-from src.utils.models import get_VGG_16_model
+from src.utils.models import get_VGG_16_model, prepare_model
 import argparse
 import pandas as pd
 import os
 import shutil
 from tqdm import tqdm
 import logging
+import io
 
 
 logging_str = r"[%(asctime)s: %(levelname)s: %(module)s]: %(message)s"
@@ -19,7 +20,7 @@ def prepare_base_model(config_path, params_path):
     params = read_yaml(params_path)
 
     artifacts = config['artifacts']
-    artifacts_dir = config['artifacts_dir']
+    artifacts_dir = artifacts['artifacts_dir']
 
     base_model_dir = artifacts['base_model_dir']
     base_model_name = artifacts['base_model_name']
@@ -32,6 +33,28 @@ def prepare_base_model(config_path, params_path):
 
     model = get_VGG_16_model(input_shape=params['image_size'], model_path=base_model_path)
 
+    full_model = prepare_model(
+        model,
+        CLASSES=params['classes'],
+        freeze_all=True,
+        freeze_till=None,
+        learning_rate=params['learning_rate']
+    )
+
+    updated_base_model = os.path.join(
+        base_model_dir_path,
+        artifacts['updated_base_model_name']
+    )
+
+
+    def _log_model_summary(model):
+        with io.StringIO() as stream:
+            model.summary(print_fn=lambda x: stream.write(f'{x}\n'))
+            summary_str = stream.getvalue()
+        return summary_str
+
+    logging.info(f'custom model summary: {_log_model_summary(full_model)}')
+    full_model.save(updated_base_model)
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
