@@ -8,6 +8,7 @@ artifacts:
   base_log_dir: base_model_dir
   tensorboard_root_log_dir: tensorboard_log_dir
   callbacks_dir: callbacks
+  data_dir: data
 
 
 source_download_dirs:
