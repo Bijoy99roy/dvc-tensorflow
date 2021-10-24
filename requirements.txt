@@ -6,7 +6,7 @@ pandas
 tqdm
 pyYAML
 boto3
-
+joblib
 
 # local setup installation
 -e .
