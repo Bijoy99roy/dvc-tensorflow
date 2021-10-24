@@ -1,4 +1,6 @@
 from src.utils.all_utils import read_yaml, create_directory
+from src.utils.models import load_full_model
+from src.utils.callbacks import get_callbacks
 import argparse
 import os
 import logging
@@ -18,7 +20,20 @@ def train_model(config_path, params_path):
     artifacts = config['artifacts']
     artifacts_dir = artifacts['artifacts_dir']
 
-    
+    train_model_dir_path = os.path.join(artifacts_dir, artifacts['trained_model_dir'])
+
+    create_directory([train_model_dir_path])
+
+    untrained_full_model_path = os.path.join(
+        artifacts_dir, 
+        artifacts['base_model_dir'], 
+        artifacts['updated_base_model_name'])
+
+    model = load_full_model(untrained_full_model_path)
+
+    callback_dir_path = os.path.join(artifacts_dir, artifacts['callbacks_dir'])
+    callbacks = get_callbacks(callback_dir_path)
+
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
@@ -30,7 +45,7 @@ if __name__ == '__main__':
     try:
         logging.info(">>>>>> stage four started")
         train_model(config_path=parsed_args.config, params_path=parsed_args.params)
-        logging.info("stage four completed! training completed and model saved >>>>>>>")
+        logging.info("stage four completed! training completed and model saved >>>>>>>\n\n")
     except Exception as e:
         logging.exception(e)
         raise e
