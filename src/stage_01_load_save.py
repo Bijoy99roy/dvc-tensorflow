@@ -40,7 +40,7 @@ if __name__ == '__main__':
     try:
         logging.info(">>>>>> stage one started")
         get_data(config_path=parsed_args.config)
-        logging.info("stage one completed! All the data are saved in local >>>>>>>")
+        logging.info("stage one completed! All the data are saved in local >>>>>>>\n\n")
     except Exception as e:
         logging.exception(e)
         raise e
