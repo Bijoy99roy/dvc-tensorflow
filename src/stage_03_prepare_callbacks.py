@@ -1,5 +1,6 @@
 from src.utils.all_utils import read_yaml, create_directory
 from src.utils.models import get_VGG_16_model, prepare_model
+from src.utils.callbacks import create_and_save_tensorboard_callback, create_and_save_checkpoint_callback
 import argparse
 import pandas as pd
 import os
@@ -16,8 +17,27 @@ logging.basicConfig(filename=os.path.join(log_dir, "running_logs.log"), level=lo
 
 
 def prepare_callbacks(config_path, params_path):
-    ...
+    config = read_yaml(config_path)
+    params = read_yaml(params_path)
 
+    artifacts = config['artifacts']
+    artifacts_dir = artifacts['artifacts_dir']
+
+    tensorboard_log_dir = os.path.join(
+        artifacts_dir, 
+        artifacts['tensorboard_root_log_dir'])
+
+    checkpoint_dir = os.path.join(artifacts_dir, artifacts['checkpoint_dir'])
+    callbacks_dir = os.path.join(artifacts_dir, artifacts['callbacks_dir'])
+
+    create_directory([
+        tensorboard_log_dir,
+        checkpoint_dir,
+        callbacks_dir
+    ])
+
+    create_and_save_tensorboard_callback(callbacks_dir, tensorboard_log_dir)
+    create_and_save_checkpoint_callback(callbacks_dir, checkpoint_dir)
 
 
 if __name__ == '__main__':
