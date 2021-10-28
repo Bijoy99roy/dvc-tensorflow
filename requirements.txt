@@ -7,6 +7,6 @@ tqdm
 pyYAML
 boto3
 joblib
-
+scipy
 # local setup installation
 -e .
